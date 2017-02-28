@@ -1,0 +1,263 @@
+
+Cara Membuat Komentar Sederhana Dengan PHP
+membuat tampilan kotak komentar seperti di web kini semakin mudah karena kali ini saya akan membantu anda untuk membuat sebuah komentar sederhana dengan PHP , dengan alat dan bahan yang kalian perlukan adalah sebagai berikut :1. XAMPP ( sebagai localhost dan MySQL )
+2. PHP editor ( Notepad++ , PHP Designer , Dreamweaver , serta apps lainnya )
+langkah pertama kita harus membuat databasenya dengan rincian sperti berikut :
+
+    CREATE TABLE comment (induk int(5), nama varchar(30), email varchar(50),komentar varchar(130))
+
+langkah kedua buka PHP editor , buat file sambung.php dengan script dibawah ini :
+
+    <?php
+    $host = “localhost”;
+    $user = “root”;
+    $pwd = “”;
+    //koneksi databse
+    $koneksi = mysql_connect($host, $user, $pwd);
+    //di buat oleh enterprise2605
+    //afian2605@ymail.com
+    //buat database
+    $db = mysql_query(“CREATE DATABASE gbook”);
+    if ($db) echo “<br>Database berhasil dibuat”;
+    else echo “<br>Database gagal dibuat”;
+    //di buat oleh enterprise2605
+    //afian2605@ymail.com
+    //buat table
+    mysql_select_db(“gbook”);
+    $table = mysql_query(“CREATE TABLE comment (induk int(5), nama varchar(30), email varchar(50),komentar varchar(130))”);
+    if ($table) echo “<br>Table berhasil dibuat”;
+    else echo “<br>Table gagal dibuat”;
+    ?>
+
+selanjutnya langkah ketiga kita buat form inputnya dengan nama form.php scriptnya dibawah ini :
+
+    <html>
+    <head>
+    <title>Untitled Document</title>
+    </head>
+    <body>
+    <form action=”input.php” name=”formsiswa” method=”post”>
+    <table>
+    <tr><td>no.induk</td><td><input name=”induk” type=”text” value=”" size=”25″ maxlength=”25″ /></td></tr>
+    <tr><td>nama anda</td><td><input name=”nama” type=”text” value=”" size=”25″ maxlength=”25″ /></td></tr>
+    <tr><td>email anda</td><td><input name=”email” type=”text” value=”" size=”25″ maxlength=”25″ /></td></tr>
+    <tr><td>komentar</td><td><textarea name=”komentar” cols=”25″ rows=”5″></textarea></td></tr>
+    <tr><td></td><td><input name=”save” type=”submit” value=”save” /></td></tr>
+    </table>
+    </form>
+    //di buat oleh enterprise2605
+    //afian2605@ymail.com
+    </body>
+    </html>
+
+selanjutnya untuk menyambungkan form.php dan database kita perlu buat file pembawa (action) dengan nama input.php lihat kode scriptnya dibawah ini :
+
+    <?php
+    include (‘sambung.php’);
+    $induk    = $_POST['induk'];
+    $nama  = $_POST['nama'];
+    $email = $_POST['email'];
+    $komentar = $_POST['komentar'];
+    $input = mysql_query (“INSERT INTO comment (induk , nama , email, komentar)
+    VALUES (‘$induk’,'$nama’,'$email’,'$komentar’)”);
+    if ($input) echo “DATA berhasil disimpan <br><br><a href=form.php>INPUT DATA LAGI</a> | <a href=tampil.php>lihat</a>”;
+    else echo “DATA GAGAL”;
+    //di buat oleh enterprise2605
+    //afian2605@ymail.com
+    ?>
+
+setelah file ketiga berhasil maka kali ini kita perlu menampilkan data yang telah tersimpan pada database tersebut. buat file dengan nama tampil.php
+
+    <?php
+    include(‘sambung.php’);
+    //di buat oleh enterprise2605
+    //afian2605@ymail.com
+    if($_GET['action']== ‘delete’){
+    mysql_query(“delete from comment where induk=’”.mysql_real_escape_string($_GET['DEL']).”‘”);
+    }
+    $tampil = mysql_query(“SELECT * FROM comment WHERE 1″);
+    echo “<table border=1 align=center width=500>
+    <tr><th>INDUK</th><th>NAMA LENGKAP</th><th>EMAIL</th><th>KOMENTAR</th><th>AKSI</th>”;
+    while ($tampil2 = mysql_fetch_array($tampil)){
+    echo ‘<tr><td>’.$tampil2['induk'].’</td>’;
+    echo ‘<td>’.$tampil2['nama'].’</td>’;
+    echo ‘<td>’.$tampil2['email'].’</td>’;
+    echo  ‘<td>’.$tampil2['komentar'].’</td>’;
+    echo ‘<td><a href=”tampil.php?DEL=’.$tampil2['induk'].’&action=delete”>hapus</a></td></tr>’;
+    }
+    echo “</table>”;
+    ?>
+
+    <!-- ----------------------------------------------------------------------------------------- -->
+    <!-- ----------------------------------------------------------------------------------------- -->
+    <!-- ----------------------------------------------------------------------------------------- -->
+
+    Langkah 1: Membuat database baru, username, dan password
+
+    Hosting
+
+Untuk membuat database baru, kamu masuk ke control panel -> phpmyadmin (atau MySQL Databases untuk yang pake Hawkhost). Isi nama database dan collation-nya. Lalu buat nama user baru berikut password-nya.  Catat juga alamat server yang kamu gunakan.
+
+    Localhost
+
+Setelah mengaktifkan module “apache” dan “MySQL” pada XAMPP, kunjungi localhost/phpmyadmin dengan browser kesayanganmu. Buat database dengan nama dan collation yang sama dengan penjelasan hosting di atas. Untuk localhost, sudah ada default nama user= root, hostname= localhost, dengan password kosong, jadi tidak perlu dibuat lagi.
+
+Langkah 2: Membuat table
+
+Baik pada hosting atau localhost, buat table baru pada database yang sudah dibuat dengan mengisikan data di bawah ini:
+
+
+        
+    CREATETABLE`comment` (
+    `id` int(3) NOTNULLauto_increment,
+    `nama` varchar(30) NOTNULLdefault'',
+    `email` varchar(30) defaultNULL,
+    `website` varchar(50) defaultNULL,
+    `komentar` varchar(250) NOTNULLdefault'',
+    `date` datetime NOTNULL,
+    `art_id` int(3) NOTNULL,
+    `art_url` varchar(60) NOTNULL,
+    PRIMARYKEY`id` (`id`)
+    )
+
+Membuat Kotak Komentar pada File contoh.php
+
+Pada part 1 sudah dibahas kalau file php1 untuk mengirimkan data ke database lalu kembali ke halaman awal (contoh.php). Biar lebih catchy mari kita ganti nama php1 menjadi submitcomment.php. Karena php2 untuk memanggil data dan menampilkannya, maka nama yang cocok untuk menggantikannya adalahpublishcomment.php. Ok, belum saatnya membahas dua file itu terlalu jauh, sekarang mari kita perhatikan saja file contoh.php berikut ini.
+
+    
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#comment {
+margin:20px 0 0 20px;
+border: 2px solid #848484;
+border-radius:20px;
+-moz-border-radius:20px;
+max-height: 90%;
+font-weight: bold;
+color: #606060;
+padding: 10px;
+width: 440px;
+background-color: #dcdcdc;
+}
+#publishcomment {
+border: 2px solid #848484;
+box-shadow: 12px 12px 7px #888888;
+margin: 30px 0 50px 20px;
+padding: 10px;
+max-height: 100%;
+color: #3d3d3d;
+width: 550px;
+font-size: 12px;
+line-height: 15px;
+}
+#publishcomment hr {
+color: #ccc;
+}
+#publishcomment a {
+color: #da5700;
+text-decoration: none;
+font-weight:normal;
+}
+#publishcomment a:link {
+font-weight: bold;
+}
+#publishcomment a:hover {
+text-decoration: underline;
+}
+</style>
+<body>
+<div id="comment">
+<form name="submitcomment" method="post" action="submitcomment.php">Nama:<br>
+<input name="nama" type="text"><br>
+Email(optional):<br><input name="email" type="text"><br>
+Website(optional):<br><input name="website" type="text"><br>
+Komentar:<br><textarea name="komentar" rows="6" cols="50"></textarea><br>
+<input name="art_id" value="1" type="hidden">
+<input name="art_url" value="contoh.php" type="hidden"><br>
+<input name="tombol" value="Kirim" type="submit"></form></div>
+<div id="publishcomment">
+<?php include("publishcomment.php"); getcomment("1"); ?></div>
+</body>
+</head>
+
+Sedikit penjelasan:
+
+    Baris ke 4-42 merupakan CSS (internal style sheet) untuk tampilan kotak komentar dan lembar tampilan komentar.
+    Baris ke 45 berisi perintah untuk mengirimkan data ke database (MySQL).
+    Baris ke 44-52 (highlight) untuk menampilkan kotak komentar.
+    Baris ke 53-54 untuk menampilkan komentar.
+    Baris ke 54 berisi perintah untuk mengambil data pada database sesuai dengan id halaman (art_id). Art_id (baris 50 dan 54) kamu isi sendiri (saya misalkan = 1).
+
+PHP1 = Submitcomment.php
+
+Submitcomment.php yaitu koneksi ke database
+
+File Submitcomment.php sebagai berikut.
+
+    
+<?php
+if($_POST["tombol"]=="Kirim")
+{
+$nama=$_POST["nama"];
+$email=$_POST["email"];
+$website=$_POST["website"];
+$komentar=$_POST["komentar"];
+$art_id=$_POST["art_id"];
+$art_url=$_POST["art_url"];
+if(empty($nama))
+$_POST["nama"]='anonymous';
+if(empty($komentar)){
+echo "<meta http-equiv='refresh' content='2; url=$art_url'>";
+die("komentar harus diisi");}
+}
+//connect database
+$con=mysql_connect("hostname", "user", "password");
+if(!$con)
+die("Tidak dapat melakukan koneksi ke server MySQL");
+//Menampilkan data
+mysql_select_db("nama_database", $con);
+$sql="INSERT INTO comment (nama, email, website, komentar, art_id, art_url,
+date)
+VALUES
+('$_POST[nama]','$_POST[email]','$_POST[website]', '$_POST[komentar]',
+'$_POST[art_id]', '$_POST[art_url]', NOW())";
+if (!mysql_query($sql,$con))
+ {
+ die('Error: ' . mysql_error());
+ }
+echo "<meta http-equiv='refresh' content='0; url=$art_url'>";
+//Memutuskan koneksi
+mysql_close($con);
+?>
+PHP1 = Publishcomment.php
+
+Publishcomment.php adalah file php untuk menampilkan komentar dari database
+
+Sedangkan file Submitcomment.php sebagai berikut.
+
+    
+<?php
+$con=mysql_connect("hostname", "user", "password");
+if(!$con)
+die("Tidak dapat melakukan koneksi ke server MySQL");
+mysql_select_db("nama_database", $con);
+?>
+<?php
+function getcomment($art_id){
+$commentquery = mysql_query("SELECT * FROM comment WHERE art_id='$art_id'
+ORDER BY id DESC") or die(mysql_error());
+$commentNum = mysql_num_rows($commentquery);
+echo "<h4>" . "Current comment(s)..." . "</h4>";
+echo "<b>" . $commentNum . " comment(s) so far. Leave a comment..." .
+"</b>" . "<br />" . "<br />";
+echo "<hr>";
+while($row = mysql_fetch_array($commentquery))
+ {
+ echo "<b>" . $row['nama'] . "</b>" . " " . " | " . " " . "<i>" .
+$row['date'] . "</i>" . "<br />" . "<br />" . $row['komentar'] . "<br />";
+ echo "<hr>";
+ }
+}
+?>
